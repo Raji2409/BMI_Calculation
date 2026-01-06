@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI Calculator</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #e3f2fd, #ffffff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .container {
+        background: #ffffff;
+        padding: 25px 35px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        width: 350px;
+    }
+
+    h3 {
+        text-align: center;
+        color: #0d47a1;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 15px;
+        background-color: #1565c0;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0d47a1;
+    }
+
+    /* Gender radio buttons */
+    .gender-group {
+        margin-bottom: 15px;
+    }
+
+    .gender-group label {
+        margin-right: 15px;
+        cursor: pointer;
+    }
+
+    /* Male highlight */
+    input[type="radio"][value="male"]:checked + span {
+        color: #0d47a1;
+        font-weight: bold;
+    }
+
+    #result {
+        font-size: 22px;
+        color: #1b5e20;
+    }
+
+    #show, #showbf {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+</style>
+
+</head>
+<body>
+<div class="container">
+    <div class="gender-group">
+    <label>Gender:</label><br>
+
+    <label>
+        <input type="radio" name="gender" value="male">
+        <span>Male</span>
+    </label>
+
+    <label>
+        <input type="radio" name="gender" value="female">
+        <span>Female</span>
+    </label>
+
+    <label>
+        <input type="radio" name="gender" value="other">
+        <span>Other</span>
+    </label>
+</div>
+
+
+
+
+    <label>Age:</label>
+    <input type="number" id="ag" min ="0" max = "107" required>
+
+    <br><br>
+
+    <label>Height (cm):</label>
+    <input id="hei" type="number" min="140" max="190">
+    <br><br>
+
+    <label>Weight (kg):</label>
+    <input id="wei" type="number" min="0.5" max="120">
+    <br><br>
+
+    <button onclick="Bmi()">View</button>
+
+    <h3>The BMI of given height and weight</h3>
+    <h3 id="result"></h3>
+    <h3 id ="show"></h3>
+    <h3 id = "showbf"></h3>
+</div>
+
+    <script>
+        function Bmi() {
+        	var age = parseInt(document.getElementById("ag").value);
+            var height = parseFloat(document.getElementById('hei').value);
+            var weight = parseFloat(document.getElementById('wei').value);
+            var result = document.getElementById("result");
+            var show = document.getElementById("show");
+            var showbf = document.getElementById("showbf");
+
+
+            if (age < 1 || age > 107) {
+            alert("Please enter a valid age (1–120 years)");
+            document.getElementById("ag").value = "";
+            return;
+        	}
+
+            if (height < 140 || height > 190) {
+                alert("Please enter a valid height (140–190 cm)");
+                document.getElementById("hei").value = "";
+                return;
+            }
+
+            if (weight < 0.5 || weight > 120) {
+                alert("Please enter a valid weight (0.5–100 kg)");
+                document.getElementById("wei").value = "";
+                return;
+            }
+
+            var bmi = (weight / (height * height)) * 10000;
+            result.textContent = bmi.toFixed(2);
+
+            if (bmi <= 18.5){
+            	show.textContent ="You are underweight need to increase weight"
+            }
+            else if(bmi > 18.5 && bmi <=25){
+            	show.textContent ="You are normal maintain same"
+            }
+            else if(bmi > 25 && bmi <=30){
+            	show.textContent ="You are overweight need to reduce weight"
+            }
+            else{
+            	show.textContent ="You are suffering from obesity need a food control"
+            }
+            var genderInput = document.querySelector('input[name="gender"]:checked');
+            if (!genderInput) {
+            alert("Please select gender");
+            return;
+            }
+
+            var genderValue;
+            if (genderInput.value === "male") {
+            genderValue = 1;
+            } 
+            else if (genderInput.value === "female") {
+            genderValue = 0;
+            } 
+            else {
+            genderValue = 0.5; // for "other"
+            }
+            var bodyFat = (1.20 * bmi) + (0.23 * age) - (10.8 * genderValue) - 5.4;
+
+            show.innerHTML += "<br><br>Estimated Body Fat: " + bodyFat.toFixed(2) + "%";
+
+            if (genderInput.value === "female"){
+                if ( bodyFat <= 10 || bodyFat <=13){
+                    showbf.innerHTML = "Essential fat"
+                }
+            
+                else if (bodyFat<=14 || bodyFat <=20){
+                    showbf.innerHTML = "Athletes"
+                }
+                else if( bodyFat <= 21 || bodyFat <= 24){
+                    showbf.innerHTML = "Fitness";
+                }
+                else if (bodyFat <= 25 || bodyFat <= 31){
+                    showbf.innerHTML = "Average";
+                }
+                else{
+                    showbf.innerHTML = "Obese"
+                }
+            }
+            else if(genderInput.value === "male"){
+                if ( bodyFat <= 2 || bodyFat <=5){
+                    showbf.innerHTML = "Essential fat"
+                }
+            
+                else if (bodyFat<=6 || bodyFat <=13){
+                    showbf.innerHTML = "Athletes"
+                }
+                else if( bodyFat <= 14 || bodyFat <= 17){
+                    showbf.innerHTML = "Fitness";
+                }
+                else if (bodyFat <= 18 || bodyFat <= 24){
+                    showbf.innerHTML = "Average";
+                }
+                else{
+                    showbf.innerHTML = "Obese"
+                }
+            }
+
+            else{
+                showbf.innerHTML = "Remains same "
+            }
+
+        }
+    </script>
+
+</body>
+</html>
